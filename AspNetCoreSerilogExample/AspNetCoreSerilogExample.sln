@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28922.388
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetCoreSerilogExample.Web", "AspNetCoreSerilogExample.Web\AspNetCoreSerilogExample.Web.csproj", "{BE382D81-8A74-4167-A7AD-C7FE1DD89C72}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BE382D81-8A74-4167-A7AD-C7FE1DD89C72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE382D81-8A74-4167-A7AD-C7FE1DD89C72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE382D81-8A74-4167-A7AD-C7FE1DD89C72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE382D81-8A74-4167-A7AD-C7FE1DD89C72}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {296EF11D-A826-4D2A-9A98-2025ACDD5BC8}
+	EndGlobalSection
+EndGlobal
