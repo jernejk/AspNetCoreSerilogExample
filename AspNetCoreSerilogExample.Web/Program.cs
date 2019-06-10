@@ -7,20 +7,27 @@ using System.Diagnostics;
 
 namespace AspNetCoreSerilogExample.Web
 {
+    /// <summary>
+    /// Logging based on blog post https://jkdev.me/asp-net-core-serilog/
+    /// </summary>
     public class Program
     {
-        public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-            .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
-            // Local settings.
-            .AddJsonFile("appsettings.local.json", optional: true)
-            .Build();
-
         public static int Main(string[] args)
         {
+            // There are 2 reasons why we are building logging this early and is used only for logging.
+            // 1. We want to log any issues that might happen while the server is spinning up.
+            //    Those are hard to find bugs and quite often are not logged properly.
+            // 2. Unfortunately ".UseConfiguration()" doesn't work correctly in the .NET Core 2.2.5 (the version I made this demo).
+            //    It will ignore the configuration and will load default configuration.
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
+                .AddJsonFile("appsettings.local.json", optional: true)
+                .Build();
+
             // Lets make sure that if creating web host fails, we can log that error.
             var loggerConfiguration = new LoggerConfiguration()
-                .ReadFrom.Configuration(Configuration)
+                .ReadFrom.Configuration(configuration)
                 .Enrich.FromLogContext()
                 .Enrich.WithProperty("ApplicationName", typeof(Program).Assembly.GetName().Name);
 
@@ -47,6 +54,9 @@ namespace AspNetCoreSerilogExample.Web
             {
                 // Happens rarely but when it does, you'll thank me. :)
                 Log.Logger.Fatal(e, "Unable to bootstrap web app.");
+
+                // Make sure all the log sinks have processed the last log before closing the application.
+                Log.CloseAndFlush();
             }
 
             return 0;
@@ -54,8 +64,12 @@ namespace AspNetCoreSerilogExample.Web
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
             => WebHost.CreateDefaultBuilder(args)
-                           .UseStartup<Startup>()
-                           .UseConfiguration(Configuration)
-                           .UseSerilog();
+                            .UseStartup<Startup>()
+                            .ConfigureAppConfiguration(configuration =>
+                            {
+                                // It's a good practice to add local settings for local dev.
+                                configuration.AddJsonFile("appsettings.local.json", optional: true);
+                            })
+                            .UseSerilog();
     }
 }
