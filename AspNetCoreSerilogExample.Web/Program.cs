@@ -12,7 +12,7 @@ namespace AspNetCoreSerilogExample.Web
     /// </summary>
     public class Program
     {
-        public static int Main(string[] args)
+        public static void Main(string[] args)
         {
             // There are 2 reasons why we are building logging this early and is used only for logging.
             // 1. We want to log any issues that might happen while the server is spinning up.
@@ -54,12 +54,10 @@ namespace AspNetCoreSerilogExample.Web
             {
                 // Happens rarely but when it does, you'll thank me. :)
                 Log.Logger.Fatal(e, "Unable to bootstrap web app.");
-
-                // Make sure all the log sinks have processed the last log before closing the application.
-                Log.CloseAndFlush();
             }
 
-            return 0;
+            // Make sure all the log sinks have processed the last log before closing the application.
+            Log.CloseAndFlush();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
