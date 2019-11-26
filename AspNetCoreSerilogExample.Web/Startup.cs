@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 
 namespace AspNetCoreSerilogExample.Web
 {
@@ -30,6 +31,9 @@ namespace AspNetCoreSerilogExample.Web
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            // This will make the HTTP requests log as rich logs instead of plain text.
+            app.UseSerilogRequestLogging();
 
             app.UseRouting();
             app.UseEndpoints(endpoints =>
