@@ -40,7 +40,7 @@ In `csproj` add:
 
 Add Seq and async console configuration in `appsetings.json`:
 
-``` json
+``` js
   "Serilog": {
     "Using": [ "Serilog.Exceptions", "Serilog", "Serilog.Sinks.Console", "Serilog.Sinks.Seq" ],
     "MinimumLevel": {
