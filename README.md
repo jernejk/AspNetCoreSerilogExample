@@ -132,7 +132,7 @@ Add Seq and async console configuration in `appsetings.json`:
                         {
                             config
                                 // Used for local settings like connection strings.
-                                .AddJsonFile("appsettings.Local.json", optional: false);
+                                .AddJsonFile("appsettings.Local.json", optional: true);
                         })
                         .UseSerilog((hostingContext, loggerConfiguration) => {
                             loggerConfiguration
