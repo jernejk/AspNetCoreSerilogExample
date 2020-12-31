@@ -1,10 +1,10 @@
-# ASP.NET Core 3.0 Serilog Template
+# ASP.NET Core 5.0 Serilog Template
 
 This is an example of how to create a ASP .NET Core app with Serilog (.NET Core 3.0+)
 
 Check my blog post for more details: [ASP.NET Core + Serilog](https://jkdev.me/asp-net-core-serilog/)
 
-If you're looking for .NET Core 2.2 implementation, check [this pull request](https://github.com/jernejk/AspNetCoreSerilogExample/pull/3/files)
+If you're looking for .NET Core 3.1 or 2.2, checkout the old branches: https://github.com/jernejk/AspNetCoreSerilogExample/branches
 
 ## 1. Add Nuget packages
 
