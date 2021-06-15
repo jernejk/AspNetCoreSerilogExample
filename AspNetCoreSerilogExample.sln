@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Root", "Root", "{55156C52-2
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetCoreMsLoggerExample.Web", "AspNetCoreMsLoggerExample.Web\AspNetCoreMsLoggerExample.Web.csproj", "{37AFFF56-53EC-4DE4-9246-1D210CB32CEC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,6 +24,10 @@ Global
 		{BE382D81-8A74-4167-A7AD-C7FE1DD89C72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE382D81-8A74-4167-A7AD-C7FE1DD89C72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE382D81-8A74-4167-A7AD-C7FE1DD89C72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37AFFF56-53EC-4DE4-9246-1D210CB32CEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37AFFF56-53EC-4DE4-9246-1D210CB32CEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37AFFF56-53EC-4DE4-9246-1D210CB32CEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37AFFF56-53EC-4DE4-9246-1D210CB32CEC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
