@@ -24,7 +24,7 @@ namespace AspNetCoreSerilogExample.Web
                 // Log.Logger will likely be internal type "Serilog.Core.Pipeline.SilentLogger".
                 if (Log.Logger == null || Log.Logger.GetType().Name == "SilentLogger")
                 {
-                    // Loading configuration or Serilog failed.
+                    // Loading configuration or running the application failed.
                     // This will create a logger that can be captured by Azure logger.
                     // To enable Azure logger, in Azure Portal:
                     // 1. Go to WebApp

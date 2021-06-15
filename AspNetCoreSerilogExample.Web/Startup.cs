@@ -21,6 +21,7 @@ namespace AspNetCoreSerilogExample.Web
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers();
             services.AddLogging();
         }
 
@@ -41,6 +42,7 @@ namespace AspNetCoreSerilogExample.Web
             // You can use Controllers, SPA routing, SignalR, etc. routing.
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute(name: "default", pattern: "{controller}/{action=Index}/{id?}");
                 endpoints.MapGet("", context => context.Response.WriteAsync("Hello World!"));
             });
         }
