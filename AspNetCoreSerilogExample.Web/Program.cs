@@ -1,4 +1,4 @@
-﻿// Logging based on https://jkdev.me/asp-net-core-serilog/ and https://github.com/datalust/dotnet6-serilog-example
+﻿// Logging based on https://github.com/jernejk/AspNetCoreSerilogExample and https://github.com/datalust/dotnet6-serilog-example
 // NOTE: When upgrading from .NET 5 or earlier, add `<ImplicitUsings>enable</ImplicitUsings>` to **.csproj** file under `<PropertyGroup>`.
 // NOTE: While you can still use full Program.cs and Startup.cs, `.UseSerilog()` is marked as obsolete for them. It's safer to move to minimal APIs.
 using Serilog;

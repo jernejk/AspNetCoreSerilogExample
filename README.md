@@ -1,10 +1,10 @@
-# ASP.NET Core 5.0 Serilog Template
+# ASP.NET Core 6.0 Serilog Template
 
-This is an example of how to create a ASP .NET Core app with Serilog (.NET Core 3.0+)
+This is an example of how to create a ASP .NET Core app with Serilog (.NET 6+)
 
 Check my blog post for more details: [ASP.NET Core + Serilog](https://jkdev.me/asp-net-core-serilog/)
 
-If you're looking for .NET Core 3.1 or 2.2, checkout the old branches: https://github.com/jernejk/AspNetCoreSerilogExample/branches
+If you're looking for .NET (Core) 2.2, 3.1 or 5, checkout the old branches: https://github.com/jernejk/AspNetCoreSerilogExample/branches
 
 ## 1. Add Nuget packages
 
@@ -83,86 +83,87 @@ Add Seq and async console configuration in `appsetings.json`:
   }
 ```
 
-## 3. Update Program.cs
+## 3. Update Program.cs (minimal APIs)
 
 ``` cs
-        public static void Main(string[] args)
-        {
-            try
-            {
-                using IHost host = CreateHostBuilder(args).Build();
-                host.Run();
-            }
-            catch (Exception ex)
-            {
-                // Log.Logger will likely be internal type "Serilog.Core.Pipeline.SilentLogger".
-                if (Log.Logger == null || Log.Logger.GetType().Name == "SilentLogger")
-                {
-                    // Loading configuration or Serilog failed.
-                    // This will create a logger that can be captured by Azure logger.
-                    // To enable Azure logger, in Azure Portal:
-                    // 1. Go to WebApp
-                    // 2. App Service logs
-                    // 3. Enable "Application Logging (Filesystem)", "Application Logging (Filesystem)" and "Detailed error messages"
-                    // 4. Set Retention Period (Days) to 10 or similar value
-                    // 5. Save settings
-                    // 6. Under Overview, restart web app
-                    // 7. Go to Log Stream and observe the logs
-                    Log.Logger = new LoggerConfiguration()
-                        .MinimumLevel.Debug()
-                        .WriteTo.Console()
-                        .CreateLogger();
-                }
+// Logging based on https://github.com/jernejk/AspNetCoreSerilogExample and https://github.com/datalust/dotnet6-serilog-example
+// NOTE: When upgrading from .NET 5 or earlier, add `<ImplicitUsings>enable</ImplicitUsings>` to **.csproj** file under `<PropertyGroup>`.
+// NOTE: While you can still use full Program.cs and Startup.cs, `.UseSerilog()` is marked as obsolete for them. It's safer to move to minimal APIs.
+using Serilog;
+using System.Diagnostics;
 
-                Log.Fatal(ex, "Host terminated unexpectedly");
-            }
-            finally
-            {
-                Log.CloseAndFlush();
-            }
-        }
+try
+{
+    var builder = WebApplication.CreateBuilder(args);
 
-        public static IHostBuilder CreateHostBuilder(string[] args)
-            => Host.CreateDefaultBuilder(args)
-                   .ConfigureWebHostDefaults(webBuilder =>
-                   {
-                       webBuilder.UseStartup<Startup>()
-                        .CaptureStartupErrors(true)
-                        .ConfigureAppConfiguration(config =>
-                        {
-                            config
-                                // Used for local settings like connection strings.
-                                .AddJsonFile("appsettings.Local.json", optional: true);
-                        })
-                        .UseSerilog((hostingContext, loggerConfiguration) => {
-                            loggerConfiguration
-                                .ReadFrom.Configuration(hostingContext.Configuration)
-                                .Enrich.FromLogContext()
-                                .Enrich.WithProperty("ApplicationName", typeof(Program).Assembly.GetName().Name)
-                                .Enrich.WithProperty("Environment", hostingContext.HostingEnvironment);
+    builder.Host.UseSerilog((ctx, loggerConfiguration) =>
+    {
+        loggerConfiguration
+            .ReadFrom.Configuration(ctx.Configuration)
+            .Enrich.FromLogContext()
+            .Enrich.WithProperty("ApplicationName", typeof(Program).Assembly.GetName().Name)
+            .Enrich.WithProperty("Environment", ctx.HostingEnvironment);
 
 #if DEBUG
-                            // Used to filter out potentially bad data due debugging.
-                            // Very useful when doing Seq dashboards and want to remove logs under debugging session.
-                            loggerConfiguration.Enrich.WithProperty("DebuggerAttached", Debugger.IsAttached);
+        // Used to filter out potentially bad data due debugging.
+        // Very useful when doing Seq dashboards and want to remove logs under debugging session.
+        loggerConfiguration.Enrich.WithProperty("DebuggerAttached", Debugger.IsAttached);
 #endif
-                        });
-                   });
-```
+    });
 
-## 4. Update Startup.cs
+    // Register services
+    builder.Services.AddControllers();
+    builder.Services.AddLogging();
 
-``` cs
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
 
-            // This will make the HTTP requests log as rich logs instead of plain text.
-            app.UseSerilogRequestLogging(); // <-- Add this line
-            
-            // ... endpoint routing, etc.
-        }
+    WebApplication app = builder.Build();
+
+    // Rest of configuration.
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseDeveloperExceptionPage();
+    }
+
+    // This will make the HTTP requests log as rich logs instead of plain text.
+    app.UseSerilogRequestLogging();
+
+    app.UseRouting();
+
+    // Absolute minimum setup, just return "Hello world!" to browser.
+    // You can use Controllers, SPA routing, SignalR, etc. routing.
+    app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapControllerRoute(name: "default", pattern: "{controller}/{action=Index}/{id?}");
+        endpoints.MapGet("", context => context.Response.WriteAsync("Hello World!\nUse /api/test/flatlog?input=Test, /api/test/StructuredLog?input=Test, etc. and observe console/Seq for logs."));
+    });
+
+    app.Run();
+}
+catch (Exception ex)
+{
+    if (Log.Logger == null || Log.Logger.GetType().Name == "SilentLogger")
+    {
+        // Loading configuration or Serilog failed.
+        // This will create a logger that can be captured by Azure logger.
+        // To enable Azure logger, in Azure Portal:
+        // 1. Go to WebApp
+        // 2. App Service logs
+        // 3. Enable "Application Logging (Filesystem)", "Application Logging (Filesystem)" and "Detailed error messages"
+        // 4. Set Retention Period (Days) to 10 or similar value
+        // 5. Save settings
+        // 6. Under Overview, restart web app
+        // 7. Go to Log Stream and observe the logs
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.Console()
+            .CreateLogger();
+    }
+
+    Log.Fatal(ex, "Host terminated unexpectedly");
+}
+finally
+{
+    Log.Information("Shut down complete");
+    Log.CloseAndFlush();
+}
 ```
