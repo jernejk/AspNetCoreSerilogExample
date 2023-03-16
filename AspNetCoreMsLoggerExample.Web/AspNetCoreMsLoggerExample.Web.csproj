@@ -1,12 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='DEBUG'">
-    <PackageReference Include="Seq.Extensions.Logging" Version="6.0.0" />
+    <PackageReference Include="Seq.Extensions.Logging" Version="6.1.0" />
   </ItemGroup>
 
   <ItemGroup>
